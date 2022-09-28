@@ -1,0 +1,7 @@
+botbuilder-integration-aiohttp>=4.14.0
+botbuilder-core
+botbuilder-dialogs
+emoji==1.7.0
+aiohttp
+asyncio
+cookiecutter==1.7.0

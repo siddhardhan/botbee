@@ -1,0 +1,78 @@
+{
+
+    "type": "AdaptiveCard",
+  
+    "body": [
+  
+      {
+  
+        "type": "TextBlock",
+  
+        "size": "ExtraLarge",
+  
+        "weight": "Bolder",
+  
+        "text": "BotBee",
+  
+        "horizontalAlignment": "Center",
+  
+        "color": "Dark"
+  
+      },
+  
+      {
+  
+        "type": "Image",
+  
+        "url": "https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco,dpr_1/xgoiicoszxxqqtktn5i8",
+  
+        "altText": "BotBee Image",
+
+        "horizontalAlignment": "Center",
+        "color": "Dark"
+  
+      },
+  
+      {
+  
+        "type": "Image",
+  
+        "url": "https://res.cloudinary.com/acloud-guru/image/fetch/c_thumb,f_auto,q_auto,w_622/https://acg-wordpress-content-production.s3.us-west-2.amazonaws.com/app/uploads/2020/11/azure-cert-levels.png",
+  
+
+        "horizontalAlignment": "Center",
+        "color": "Dark"
+  
+      },
+
+      {
+  
+        "type": "TextBlock",
+  
+        "text": "This Bot will help you prepare for Azure certifications.",
+  
+        "wrap": true
+  
+      }
+  
+    ],
+  
+    "actions": [
+  
+      {
+  
+        "type": "Action.OpenUrl",
+  
+        "title": "by BotBee Team",
+  
+        "url": "https://google.com/"
+  
+      }
+  
+    ],
+  
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  
+    "version": "1.1"
+  
+  }
