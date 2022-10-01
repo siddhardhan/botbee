@@ -19,6 +19,7 @@ from adapter_with_error_handler import AdapterWithErrorHandler
 from dialogs.operations.createorder_dialog import CreateOrderDialog
 from dialogs.operations.vieworder_dialog import ViewOrderDialog
 from dialogs.operations.cancelorder_dialog import CancelOrderDialog
+from dialogs.operations.completeorder_dialog import CompleteOrderDialog
 
 
 CONFIG = DefaultConfig()
@@ -32,7 +33,8 @@ CONVERSATION_STATE = ConversationState(MEMORY)
 #create adapter
 ADAPTER = AdapterWithErrorHandler(SETTINGS, CONVERSATION_STATE)
 
-CREATEORDER_DIALOG = CreateOrderDialog()
+COMPLETEORDER_DIALOG = CompleteOrderDialog()
+CREATEORDER_DIALOG = CreateOrderDialog(COMPLETEORDER_DIALOG)
 VIEWORDER_DIALOG = ViewOrderDialog()
 CANCELORDER_DIALOG = CancelOrderDialog()
 
