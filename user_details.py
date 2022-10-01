@@ -1,6 +1,12 @@
 class UserDetails:
     def __init__(
         self,
-        user_id: str = None,
+        email_id: str = None,
+        role: str = None,
     ):
-        self.user_id = user_id
+        self.email_id = email_id
+        self.role = role
+    
+    def print(self):
+        print("email ID:" + self.email_id)
+        print("Role:" + self.role)
