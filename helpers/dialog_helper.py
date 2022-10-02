@@ -11,7 +11,7 @@ class DialogHelper:
         dialog_set = DialogSet(accessor)
         dialog_set.add(dialog)
         user_details = UserDetails()
-        user_details.user_id = None
+        user_details.email_id = None
         dialog_context = await dialog_set.create_context(turn_context)
         results = await dialog_context.continue_dialog()
         if results.status == DialogTurnStatus.Empty:

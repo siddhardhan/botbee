@@ -1,3 +1,6 @@
+import pandas as pd
+import userData
+
 from botbuilder.dialogs import (
     ComponentDialog,
     WaterfallDialog,
@@ -7,12 +10,7 @@ from botbuilder.dialogs import (
 from botbuilder.dialogs.prompts import TextPrompt, PromptOptions, ChoicePrompt, ConfirmPrompt
 from botbuilder.core import MessageFactory, TurnContext, CardFactory, UserState
 from botbuilder.schema import InputHints, CardAction, ActionTypes, SuggestedActions
-
 from botbuilder.dialogs.choices import Choice
-
-import string
-import random
-
 from .operations.createorder_dialog import CreateOrderDialog
 from .operations.vieworder_dialog import ViewOrderDialog
 from .operations.cancelorder_dialog import CancelOrderDialog
@@ -37,7 +35,7 @@ class MainDialog(ComponentDialog):
         self.add_dialog(ConfirmPrompt(ConfirmPrompt.__name__))
         self.add_dialog(
             WaterfallDialog(
-                "WFDialog", [self.userexists_step, self.userid_step, self.intro_step, self.act_step, self.final_step]
+                "WFDialog", [self.userexists_step, self.role_step, self.azexp_step, self.final_step]
             )
         )
 
@@ -46,19 +44,18 @@ class MainDialog(ComponentDialog):
     async def userexists_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
 
         user_details = step_context.options
-
-        user_id = None
+        email_id = None
 
         if user_details:
-            if user_details.user_id == None:
-                user_id = None
+            if user_details.email_id == None:
+                email_id = None
             else:
-                user_id = user_details.user_id
+                email_id = user_details.email_id
         else:
-            user_id = None
+            email_id = None
         
-        if user_id == None:
-            reply = MessageFactory.suggested_actions(
+        if email_id == None:
+            ''' reply = MessageFactory.suggested_actions(
                 [CardAction(title = 'Existing USer', type=ActionTypes.im_back, value='Existing User'),
                 CardAction(title='New User', type=ActionTypes.im_back, value='Existing User')],  'Existing or new user?')
 
@@ -66,28 +63,36 @@ class MainDialog(ComponentDialog):
                 ChoicePrompt.__name__,
                 PromptOptions(prompt=reply, choices=[Choice('Existing User'), Choice('New User')],
                 ),
-            )
+            ) '''
+
+            message_text = "Welcome to BeeBot !!! Please provide your email ID to get started."
+            prompt_message =MessageFactory.text(
+                    message_text, message_text, InputHints.expecting_input
+                )
+            return await step_context.prompt(
+                    TextPrompt.__name__, PromptOptions(prompt=prompt_message)
+                )
 
         else:
             return await step_context.next(user_details)
 
-    async def userid_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
+    ''' async def emailid_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
         user_details = step_context.options
-        user_id = None
+        email_id = None
 
         if user_details:
-            if user_details.user_id == None:
-                user_id = None
+            if user_details.email_id == None:
+                email_id = None
             else:
-                user_id = user_details.user_id
+                email_id = user_details.email_id
         else:
-            user_id =None
+            email_id =None
 
-        if user_id == None:
-            step_context.values['UserType'] = step_context.result.value
-            user_type = step_context.values['UserType']
-
-            if user_type == "Existing User":
+        if email_id == None:
+            step_context.values['UserType'] = step_context.result
+            email_id = step_context.values['UserType']
+            print(email_id)
+            if email_id == "Existing User":
                 message_text = "Please enter your user id."
                 prompt_message =MessageFactory.text(
                     message_text, message_text, InputHints.expecting_input
@@ -97,10 +102,10 @@ class MainDialog(ComponentDialog):
                 )
             else:
                 N= 7
-                user_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
-                user_details.user_id = user_id
+                email_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
+                user_details.email_id = email_id
 
-                msg_text = "Please note your user id " + user_id
+                msg_text = "Please note your user id " + email_id
                 msg = MessageFactory.text(
                     msg_text, msg_text, InputHints.ignoring_input
                 )
@@ -108,40 +113,95 @@ class MainDialog(ComponentDialog):
                 return await step_context.next(user_details)
         else:
             return await step_context.next(user_details)
+    '''
 
-    async def intro_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
+    async def role_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
 
         user_details = step_context.options
-        user_id = None
+        email_id = None
         
         if user_details:
-            if user_details.user_id == None:
-                user_id = None
+            if user_details.email_id == None:
+                email_id = None
             else:
-                user_id = user_details.user_id
+                email_id = user_details.email_id
         else:
-            user_id = None
+            email_id = None
 
-        if user_id == None:
+        if email_id == None:
             if (step_context.result):
-                step_context.values['user_id']= step_context.result
-                user_details.user_id = step_context.result
+                step_context.values['email_id']= step_context.result
+                user_details.email_id = step_context.values['email_id']
+                #TODO : validate email ID
+                df = userData.getUser(user_details.email_id)
+                if df.size > 0 :
+                    step_context.values['role']= df.iloc[0]["role"]
+                    user_details.role = step_context.values['role']
+                    step_context.values['experience']= df.iloc[0]["experience"]
+                    user_details.experience = step_context.values['experience']
+                    step_context.values['level']= df.iloc[0]["level"]
+                    user_details.level = step_context.values['level']
+        
+        print("email id:" + user_details.email_id)
+        print("role:" + user_details.role)
+        print("experience:" + user_details.experience)
+        print("level:" + user_details.level)
 
-        reply = MessageFactory.suggested_actions(
-            [CardAction(title='Create Order', type=ActionTypes.im_back, value='Create Order'),
-            CardAction(title='View Order', type=ActionTypes.im_back, value='View Order'),
-            CardAction(title='Cancel Order', type=ActionTypes.im_back, value='Cancel Order'),
-            ], 'What operation you would like to perform?')
+        if user_details.email_id != None and user_details.role == None:
+            reply = MessageFactory.suggested_actions(
+                [CardAction(title='Administrator', type=ActionTypes.im_back, value='Administrator'),
+                CardAction(title='Developer', type=ActionTypes.im_back, value='Developer'),
+                CardAction(title='AI Engineer', type=ActionTypes.im_back, value='AI Engineer'),
+                CardAction(title='Other', type=ActionTypes.im_back, value='Other'),
+                ], 'What is your current role?')
 
-        return await step_context.prompt(
-            ChoicePrompt.__name__,
-            PromptOptions(
-                prompt=reply,
-                choices=[Choice("Create Order"),Choice("View Order"), Choice("Cancel Order")],
-            ),
-        )
+            return await step_context.prompt(
+                ChoicePrompt.__name__,
+                PromptOptions(
+                    prompt=reply,
+                    choices=[Choice("Administrator"),Choice("Developer"), Choice("AI Engineer"), Choice("Other")],
+                ),
+            )
+        else:
+            return await step_context.next(user_details)
 
-    async def act_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
+    async def azexp_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
+        user_details = step_context.options
+        role = None
+        
+        if user_details:
+            if user_details.role == None:
+                role = None
+            else:
+                role = user_details.role
+        else:
+            role = None
+
+        if role == None:
+            if (step_context.result):
+                step_context.values['role']= step_context.result.value
+                user_details.role = step_context.values['role']
+                print(user_details.role)
+
+        if user_details.email_id != None and user_details.role != None and user_details.experience == None:
+            reply = MessageFactory.suggested_actions(
+                [CardAction(title='0-6 months', type=ActionTypes.im_back, value='0-6 months'),
+                CardAction(title='6-12 months', type=ActionTypes.im_back, value='6-12 months'),
+                CardAction(title='1-2 years', type=ActionTypes.im_back, value='1-2 years'),
+                CardAction(title='2+ years', type=ActionTypes.im_back, value='2+ years'),
+                ], 'How long you are working on Azure platform?')
+
+            return await step_context.prompt(
+                ChoicePrompt.__name__,
+                PromptOptions(
+                    prompt=reply,
+                    choices=[Choice("0-6 months"),Choice("6-12 months"), Choice("1-2 years"), Choice("2+ years")],
+                ),
+            )
+        else:
+            return await step_context.next(user_details)
+
+    ''' async def act_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         step_context.values['Operation'] = step_context.result.value
         operation = step_context.values['Operation']
 
@@ -159,10 +219,53 @@ class MainDialog(ComponentDialog):
             return await step_context.begin_dialog(self._vieworder_dialog_id, user_details)
 
         if operation == "Cancel Order":
-            return await step_context.begin_dialog(self._cancelorder_dialog_id, user_details)
+            return await step_context.begin_dialog(self._cancelorder_dialog_id, user_details) '''
 
 
 
     async def final_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
         user_details = step_context.options
+        experience = None
+        
+        if user_details:
+            if user_details.experience == None:
+                experience = None
+            else:
+                experience = user_details.experience
+        else:
+            experience = None
+
+        if experience == None:
+            if (step_context.result):
+                step_context.values['experience']= step_context.result.value
+                user_details.experience = step_context.values['experience']
+
+        if user_details.experience ==  "0-6 months":
+            step_context.values['level']= "fundamentals"
+            user_details.level = step_context.values['level']
+        elif user_details.experience ==  "6-12 months":
+            step_context.values['level']= "associate"
+            user_details.level = step_context.values['level']
+        elif user_details.experience ==  "1-2 years":
+            step_context.values['level']= "expert"
+            user_details.level = step_context.values['level']
+        else:
+            step_context.values['level']= "specialty"
+            user_details.level = step_context.values['level']
+
+        if user_details.email_id != None and user_details.role != None and user_details.experience != None:
+            df = pd.DataFrame({
+                'email_id': [user_details.email_id],
+                'role': [user_details.role],
+                'experience': [user_details.experience],
+                'level': [user_details.level],
+            })
+            print("email id:" + user_details.email_id)
+            print("role:" + user_details.role)
+            print("experience:" + user_details.experience)
+            print("level:" + user_details.level)
+            print("Context:" + str(step_context.values))
+            print("Dataframe:" + str(df))
+            userData.addUser(df, user_details.email_id)
+            return await step_context.end_dialog()
         return await step_context.replace_dialog(self.id, user_details)

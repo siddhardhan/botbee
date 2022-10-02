@@ -51,7 +51,7 @@ class CreateOrderDialog(ComponentDialog):
     
     async def act_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         user_details = step_context.options
-        user_id = user_details.user_id
+        email_id = user_details.email_id
         order_desc = str(step_context.result)
 
         user_details.orders_list = []
@@ -111,7 +111,7 @@ class CreateOrderDialog(ComponentDialog):
     async def summary_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
 
         user_details = step_context.options
-        user_id = user_details.user_id
+        email_id = user_details.email_id
         #generate order id
         N = 4
         order_id = ''.join(random.choices(string.digits, k= N))
@@ -134,7 +134,7 @@ class CreateOrderDialog(ComponentDialog):
             items.append(order)
 
         df['order_description'] = items
-        df['user_id'] = user_id
+        df['email_id'] = email_id
         df['order_id'] = order_id
         df['order_status'] = order_status
         df['creation_date'] = order_date
