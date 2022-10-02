@@ -142,11 +142,6 @@ class MainDialog(ComponentDialog):
                     step_context.values['level']= df.iloc[0]["level"]
                     user_details.level = step_context.values['level']
         
-        print("email id:" + user_details.email_id)
-        print("role:" + user_details.role)
-        print("experience:" + user_details.experience)
-        print("level:" + user_details.level)
-
         if user_details.email_id != None and user_details.role == None:
             reply = MessageFactory.suggested_actions(
                 [CardAction(title='Administrator', type=ActionTypes.im_back, value='Administrator'),
@@ -254,18 +249,6 @@ class MainDialog(ComponentDialog):
             user_details.level = step_context.values['level']
 
         if user_details.email_id != None and user_details.role != None and user_details.experience != None:
-            df = pd.DataFrame({
-                'email_id': [user_details.email_id],
-                'role': [user_details.role],
-                'experience': [user_details.experience],
-                'level': [user_details.level],
-            })
-            print("email id:" + user_details.email_id)
-            print("role:" + user_details.role)
-            print("experience:" + user_details.experience)
-            print("level:" + user_details.level)
-            print("Context:" + str(step_context.values))
-            print("Dataframe:" + str(df))
-            userData.addUser(df, user_details.email_id)
+            userData.addUser(user_details)
             return await step_context.end_dialog()
         return await step_context.replace_dialog(self.id, user_details)

@@ -6,3 +6,4 @@ aiohttp
 asyncio
 cookiecutter==1.7.0
 pandas
+pyodbc

@@ -22,6 +22,7 @@ pip3 install -r requirements.txt
 
 3. **Run the Utility**
 ```
+export SQL_PASSWORD=<sql password>
 python3 app.py
 ```
 

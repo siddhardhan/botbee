@@ -1,26 +1,34 @@
 import pandas as pd 
-import os 
+import pyodbc
+import os
+import pandas.io.sql as psql
+from config import DefaultConfig
+from user_details import UserDetails
 
-file = "./data/user_data.csv"
 
-def addUser(df, email_id):
+CONFIG = DefaultConfig()
+conn_str = "DRIVER={};SERVER=tcp:{};PORT=1433;DATABASE={};UID={};PWD={}".format(
+    CONFIG.SQL_DRIVER, 
+    CONFIG.SQL_DB_SERVER,
+    CONFIG.SQL_DATABASE,
+    CONFIG.SQL_USERNAME,
+    os.getenv('SQL_PASSWORD') )
 
-    if getUser(email_id).size == 0:
-        df_orig = pd.read_csv(file)
+def addUser(user: UserDetails):
+    if getUser(user.email_id).size == 0:
+        with pyodbc.connect(conn_str) as conn:
+            with conn.cursor() as cursor:
+                query = "INSERT INTO Users VALUES ('{}', '{}', '{}', '{}')".format(user.email_id, user.role, user.experience, user.level)
+                cursor.execute(query)
+                conn.commit()
 
-        if(os.path.exists(file) and os.path.isfile(file)):
-            os.remove(file)
-
-        frames = [df_orig, df]
-        result = pd.concat(frames)
-
-        result.to_csv(file, index=False)
-
-def getUser(email_id):
-    df_orig = pd.read_csv(file)
-
-    print(df_orig)
-
-    df = df_orig[(df_orig['email_id'] == email_id)]
-    print(df)
+def getUser(email_id: str):
+    with pyodbc.connect(conn_str) as conn:
+        with conn.cursor() as cursor:
+            query = "SELECT * FROM Users WHERE EMAIL_ID='{}'".format(email_id)
+            df = psql.read_sql(query, conn)
+            
+            df= df.rename(columns=str.lower)
+            print(df)
     return df
+
