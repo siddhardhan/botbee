@@ -4,7 +4,7 @@ class DefaultConfig:
     PORT = 3978
     APP_ID = os.environ.get("MicrosoftAppId", "")
     APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "")
-    LUIS_APP_URL="https://sid-auth-0988.cognitiveservices.azure.com/luis/prediction/v3.0/apps/e31e2e97-ce5b-4c8a-9708-76e2fff6a00c/slots/production/predict?verbose=true&show-all-intents=true&log=true&subscription-key=17eef37902314781b553a7b38b4d9e8b&query="
+    LUIS_APP_URL=""
     SQL_DB_SERVER = 'botbee-sql-server.database.windows.net'
     SQL_DATABASE = 'botbeeUserDataDB'
     SQL_USERNAME = 'azureuser'  
@@ -12,6 +12,6 @@ class DefaultConfig:
 
     # Fundamentals language
     LANGUAGE_ENDPOINT = "https://language-service-sid-0987.cognitiveservices.azure.com/"
-    LANGUAGE_CREDENTIAL_KEY = "ac6111ef5b194b70b9980a0eaeff2a41"
+    LANGUAGE_CREDENTIAL_KEY = "xxxxxxx"
     FUNDAMENTALS_KNOWLEDGE_BASE_PROJECT = "language-studio-proj-sid-0987"
     ASSOCIATE_KNOWLEDGE_BASE_PROJECT = "language-studio-proj-sid-0987"

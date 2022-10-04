@@ -257,9 +257,9 @@ class MainDialog(ComponentDialog):
             user_details.isSaved = step_context.values['isSaved']
             
             if user_details.isExistingUser:
-                message_text = "Welcome back to BeeBot !!!"
+                message_text = "Welcome back to BeeBot !!! Please continue with your search..."
             else:
-                message_text = "Your registration is completed now with BeeBot !!!"
+                message_text = "Your registration is completed now with BeeBot !!! Please continue with your search..."
             
             message =MessageFactory.text(
                 message_text, message_text, InputHints.ignoring_input
