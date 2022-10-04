@@ -3,6 +3,8 @@ https://learn.microsoft.com/en-us/azure/azure-sql/database/connect-query-python?
 
 https://learn.microsoft.com/en-us/azure/azure-sql/database/single-database-create-quickstart?view=azuresql&tabs=azure-portal
 
+https://www.microsoft.com/en-us/sql-server/developer-get-started/python/mac/?rtc=1
+
 
 ```
 CREATE TABLE Users (

@@ -9,3 +9,9 @@ class DefaultConfig:
     SQL_DATABASE = 'botbeeUserDataDB'
     SQL_USERNAME = 'azureuser'  
     SQL_DRIVER= '{ODBC Driver 17 for SQL Server}'
+
+    # Fundamentals language
+    LANGUAGE_ENDPOINT = "https://language-service-sid-0987.cognitiveservices.azure.com/"
+    LANGUAGE_CREDENTIAL_KEY = "ac6111ef5b194b70b9980a0eaeff2a41"
+    FUNDAMENTALS_KNOWLEDGE_BASE_PROJECT = "language-studio-proj-sid-0987"
+    ASSOCIATE_KNOWLEDGE_BASE_PROJECT = "language-studio-proj-sid-0987"

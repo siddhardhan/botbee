@@ -1,6 +1,7 @@
 import pandas as pd 
 import pyodbc
 import os
+import requests
 import pandas.io.sql as psql
 from config import DefaultConfig
 from user_details import UserDetails
@@ -27,8 +28,14 @@ def getUser(email_id: str):
         with conn.cursor() as cursor:
             query = "SELECT * FROM Users WHERE EMAIL_ID='{}'".format(email_id)
             df = psql.read_sql(query, conn)
-            
             df= df.rename(columns=str.lower)
-            print(df)
     return df
+
+def _query_language(question, level: str)-> str:
+        params = {'question':question, 'level': level}
+        url = "http://localhost:8080/language/search"
+        r = requests.get(url = url, params = params)
+        data = r.json()
+        print(data)
+        return data["answer"]
 

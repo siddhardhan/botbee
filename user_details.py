@@ -5,6 +5,8 @@ class UserDetails:
         role: str = None,
         experience: str = None,
         level:str = None,
+        isExistingUser:bool = False,
+        isSaved:bool = False,
         orders_list: [] = [],
         current_order: int = 0,
     ):
@@ -12,5 +14,7 @@ class UserDetails:
         self.role = role
         self.experience = experience
         self.level = level
+        self.isExistingUser = isExistingUser
+        self.isSaved = isSaved
         self.orders_list = orders_list
         self.current_order = current_order

@@ -1,5 +1,6 @@
 import pandas as pd
 import userData
+import requests
 
 from botbuilder.dialogs import (
     ComponentDialog,
@@ -35,10 +36,9 @@ class MainDialog(ComponentDialog):
         self.add_dialog(ConfirmPrompt(ConfirmPrompt.__name__))
         self.add_dialog(
             WaterfallDialog(
-                "WFDialog", [self.userexists_step, self.role_step, self.azexp_step, self.final_step]
+                "WFDialog", [self.userexists_step, self.role_step, self.azexp_step, self.saveuser_step, self.search_step, self.final_step]
             )
         )
-
         self.initial_dialog_id = "WFDialog"
 
     async def userexists_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
@@ -72,7 +72,6 @@ class MainDialog(ComponentDialog):
             return await step_context.prompt(
                     TextPrompt.__name__, PromptOptions(prompt=prompt_message)
                 )
-
         else:
             return await step_context.next(user_details)
 
@@ -130,17 +129,19 @@ class MainDialog(ComponentDialog):
 
         if email_id == None:
             if (step_context.result):
-                step_context.values['email_id']= step_context.result
-                user_details.email_id = step_context.values['email_id']
-                #TODO : validate email ID
-                df = userData.getUser(user_details.email_id)
-                if df.size > 0 :
-                    step_context.values['role']= df.iloc[0]["role"]
-                    user_details.role = step_context.values['role']
-                    step_context.values['experience']= df.iloc[0]["experience"]
-                    user_details.experience = step_context.values['experience']
-                    step_context.values['level']= df.iloc[0]["level"]
-                    user_details.level = step_context.values['level']
+                    step_context.values['email_id']= step_context.result
+                    user_details.email_id = step_context.values['email_id']
+                    #TODO : validate email ID
+                    df = userData.getUser(user_details.email_id)
+                    if df.size > 0 :
+                        step_context.values['role']= df.iloc[0]["role"]
+                        user_details.role = step_context.values['role']
+                        step_context.values['experience']= df.iloc[0]["experience"]
+                        user_details.experience = step_context.values['experience']
+                        step_context.values['level']= df.iloc[0]["level"]
+                        user_details.level = step_context.values['level']
+                        step_context.values['isExistingUser']= True
+                        user_details.isExistingUser = step_context.values['isExistingUser']
         
         if user_details.email_id != None and user_details.role == None:
             reply = MessageFactory.suggested_actions(
@@ -218,7 +219,7 @@ class MainDialog(ComponentDialog):
 
 
 
-    async def final_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
+    async def saveuser_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
         user_details = step_context.options
         experience = None
         
@@ -247,8 +248,56 @@ class MainDialog(ComponentDialog):
         else:
             step_context.values['level']= "specialty"
             user_details.level = step_context.values['level']
+        
+        if not user_details.isSaved:
+            if user_details.email_id != None and user_details.role != None and user_details.experience != None:
+                userData.addUser(user_details)
+            
+            step_context.values['isSaved'] = True
+            user_details.isSaved = step_context.values['isSaved']
+            
+            if user_details.isExistingUser:
+                message_text = "Welcome back to BeeBot !!!"
+            else:
+                message_text = "Your registration is completed now with BeeBot !!!"
+            
+            message =MessageFactory.text(
+                message_text, message_text, InputHints.ignoring_input
+            )
+            await step_context.context.send_activity(message) 
+        return await step_context.next(user_details)
 
-        if user_details.email_id != None and user_details.role != None and user_details.experience != None:
-            userData.addUser(user_details)
-            return await step_context.end_dialog()
-        return await step_context.replace_dialog(self.id, user_details)
+        '''     #return await step_context.end_dialog()
+        print(user_details.email_id)
+        return await step_context.replace_dialog(self.id, user_details) '''
+
+    async def search_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
+        user_details = step_context.options
+        message_text = ""
+        prompt_message =MessageFactory.text(
+            message_text, message_text, InputHints.expecting_input
+        )
+        return await step_context.prompt(
+            TextPrompt.__name__, PromptOptions(prompt=prompt_message)
+        )
+    
+    async def final_step(self, step_context: WaterfallStepContext)-> DialogTurnResult:
+        user_details = step_context.options
+
+        if (step_context.result):
+            message_text = userData._query_language(question=step_context.result, level=user_details.level)
+            prompt_message =MessageFactory.text(
+                message_text, message_text, InputHints.expecting_input
+            )
+            await step_context.prompt(
+                TextPrompt.__name__, PromptOptions(prompt=prompt_message)
+            )
+        #return await step_context.end_dialog()
+        return await step_context.replace_dialog(self.id, user_details) 
+
+    def _validate_email_id(self, user_input: str) -> bool:
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]*[@]\w+[.]\w{2,3}$' 
+        if not (re.search(regex,user_input)):
+            return False
+        return True
+
