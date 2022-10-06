@@ -7,4 +7,3 @@ asyncio
 cookiecutter==1.7.0
 pandas
 pyodbc
-azure-ai-language-questionanswering

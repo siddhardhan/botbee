@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "appServiceName": {
-            "value": "botbee-appsrv-0987"
+            "value": "botbee-app-srv-0987"
         },
         "existingAppServicePlanName": {
             "value": ""
@@ -12,7 +12,7 @@
             "value": ""
         },
         "newAppServicePlanName": {
-            "value": ""
+            "value": "botbee-asp-0987"
         },
         "newAppServicePlanLocation": {
             "value": "West US"

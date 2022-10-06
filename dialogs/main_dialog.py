@@ -65,7 +65,7 @@ class MainDialog(ComponentDialog):
                 ),
             ) '''
 
-            message_text = "Welcome to BeeBot !!! Please provide your email ID to get started."
+            message_text = "Welcome to BotBee !!! Please provide your email ID to get started."
             prompt_message =MessageFactory.text(
                     message_text, message_text, InputHints.expecting_input
                 )
@@ -257,9 +257,9 @@ class MainDialog(ComponentDialog):
             user_details.isSaved = step_context.values['isSaved']
             
             if user_details.isExistingUser:
-                message_text = "Welcome back to BeeBot !!! Please continue with your search..."
+                message_text = "Welcome back to BotBee !!! Please continue with your search..."
             else:
-                message_text = "Your registration is completed now with BeeBot !!! Please continue with your search..."
+                message_text = "Your registration is completed now with BotBee !!! Please continue with your search..."
             
             message =MessageFactory.text(
                 message_text, message_text, InputHints.ignoring_input

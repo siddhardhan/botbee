@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "azureBotId": {
-            "value": ""
+            "value": "botbee-id-0987"
         },
         "azureBotSku": {
             "value": "S1"
@@ -15,7 +15,7 @@
             "value": ""
         },
         "appId": {
-            "value": ""
+            "value": "fcdf9be1-77bf-4d4e-8a1d-3d2b97838e5c"
         }
     }
 }

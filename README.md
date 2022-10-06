@@ -31,7 +31,7 @@ python3 app.py
 
 ## Publish 
 
-* Reference: https://jd-bots.com/2021/09/27/deploy-a-basic-python-bot-to-azure-microsoft-bot-framework/
+* Reference: https://learn.microsoft.com/en-us/azure/bot-service/provision-and-publish-a-bot?view=azure-bot-service-4.0&tabs=userassigned%2Cpython
 
 
 az login
@@ -52,9 +52,17 @@ az identity create --resource-group user63 --name user63-identity-0987
 }
 ```
 
-az deployment group create --resource-group user63 --template-file deploymentTemplates/deployUseExistResourceGroup/template-BotApp-with-rg.json --parameters @deploymentTemplates/deployUseExistResourceGroup/parameters-for-template-BotApp-with-rg.json 
+az deployment group create --resource-group user63 --template-file deploymentTemplates/deployUseExistResourceGroup/template-BotApp-with-rg.json --parameters @deploymentTemplates/deployUseExistResourceGroup/parameters-for-template-BotApp-with-rg.json
 
-az deployment group create --resource-group <group-name> --template-file <template-file> --parameters @<parameters-file>
+az deployment group create --resource-group user63 --template-file deploymentTemplates/deployUseExistResourceGroup/template-AzureBot-with-rg.json --parameters @deploymentTemplates/deployUseExistResourceGroup/parameters-for-template-AzureBot-with-rg.json
+
+
+az bot update --resource-group user63 --name botbee-id-0987 --endpoint https://botbee-id-0987.azurewebsites.net/api/messages
+
+
+create zip file name - pythonBotBee.zip
+
+
 
 ## References
 * [Create a bot with the Bot Framework SDK using Python](https://learn.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-create-bot?view=azure-bot-service-4.0&tabs=csharp%2Cvs)

@@ -1,7 +1,7 @@
 import os
 
 class DefaultConfig:
-    PORT = 3978
+    PORT = 3980
     APP_ID = os.environ.get("MicrosoftAppId", "")
     APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "")
     LUIS_APP_URL=""
